@@ -18,5 +18,9 @@
   "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/aqumus/flowAndroid/issues"
+  },
+  "devDependencies": {
+    "gulp": "~3.9.1",
+    "gulp-git": "~1.7.1"
   }
 }
