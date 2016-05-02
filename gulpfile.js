@@ -1,15 +1,18 @@
 var gulp = require('gulp');
 var git = require('gulp-git');
+var merge = require('merge-stream');
 
 gulp.task('gcheckout',function(){
 	//console.log('gcheckout');
 	//console.log('process',process.argv);
 	
-	gulp.src('./dist/*','./views/dashboard.jade')
-  		.pipe(git.checkoutFiles());
+	var sources=['./dist/*','./views/dashboard.jade'];
+  	var tasks = sources.map(function(src){
+        return gulp.src(src)
+            	.pipe(git.checkoutFiles());
+    });
 
-  //gulp.src('./*')
-  //.pipe(git.commit('commit message'));
+    return merge(tasks);
 });
 
 gulp.task('gcommit',function(){
@@ -22,7 +25,7 @@ gulp.task('gcommit',function(){
 	commit_message = process.argv[indexOfCommitMsg +1]
 	//console.log('msg',commit_message);
 	gulp.src('./*')
-  		.pipe(git.commit(commit_message,{emitData:true}));
+  		.pipe(git.commit(commit_message,{emitData:true}))
   		.on('data',function(data) {
       		console.log(data);
     	});
@@ -30,15 +33,20 @@ gulp.task('gcommit',function(){
 
 });
 
+gulp.task('gadd',function(){
+		return gulp.src('./*')
+    				.pipe(git.add({args: '-u .'}));
+	});
+
 gulp.task('gpull', function(){
-  git.pull('origin', 'develop', {args: '--rebase'}, function (err) {
+  git.pull('origin', 'master', {args: '--rebase'}, function (err) {
     if (err) throw err;
   });
   console.log('git pull and rebase completed successfully');
 });
 
 gulp.task('push', function(){
-  git.push('origin', 'develop',{},function (err) {
+  git.push('origin', 'master',{},function (err) {
     if (err) throw err;
   });
   console.log('git pushed successfully');

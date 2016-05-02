@@ -9,4 +9,4 @@ var t1;
 
 
 
-var pop;
+var pop;var t='is owkring';
